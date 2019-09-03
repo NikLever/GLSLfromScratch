@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en" >
+
+<head>
+  <meta charset="UTF-8">
+  <title>Understanding using dot products to calculate the distance to a line segment</title>
+  
+  
+  
+      <link rel="stylesheet" href="css/style.css">
+
+  
+</head>
+
+<body>
+
+  <canvas id="graph" width="600" height="400" style="border: 1px solid"></canvas>
+<table id="data" border>
+  <tr><th>pt</th><th>a</th><th>b</th><th>d</th><th>p</th><th>h1</th><th>h</th><th>l</th><th>result</th></tr>
+  <tr><td>(0,0)</td><td>(0,0)</td><td>(0,0)</td><td>(0,0)</td><td>(0,0)</td><td>0</td><td>0</td><td>0</td><td>0</td></tr>
+</table>
+<ul>
+  <li>pt - test point - drag with the mouse or touch</li>
+  <li>a - origin of lines</li>
+  <li>b - end of line that we're checking</li>
+  <li>d - line from origin to test point</li>
+  <li>p - line from origin to end of check line</li>
+  <li>h1 - project d onto p</li>
+  <li>h - clamp h1 to between a and b</li>
+  <li>l - distance from test point to line p</li>
+  <li>result - 0, not between line p and thickness from line. >0, value between p and thickness</li>
+</ul>
+<p>
+  Notice that if you are close to the line, the value of result is between 0 and 1. Beyond the line in any direction the value will be 0. Drag in the graph to see the values change.</p>
+  
+  
+
+    <script  src="js/index.js"></script>
+
+
+
+
+</body>
+
+</html>

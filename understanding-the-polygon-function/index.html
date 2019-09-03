@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en" >
+
+<head>
+  <meta charset="UTF-8">
+  <title>Understanding the polygon function</title>
+  
+  
+  
+      <link rel="stylesheet" href="css/style.css">
+
+  
+</head>
+
+<body>
+
+  <canvas id="graph" width="600" height="400" style="border: 1px solid"></canvas>
+<table id="data" border>
+  <tr><th>sides</th><th>radius</th><th>theta</th><th>index</th><th>angle</th><th>cos</th><th>d</th><th>result</th></tr>
+  <tr><td>0</td><td>180</td><td>0</td><td>0</td><td>0</td><td>(0,0)</td><td>(0,0)</td><td>(0,0)</td></tr>
+</table>
+<ul>
+  <li>sides - number of sides in the polygon</li>
+  <li>radius</li>
+  <li>theta - angle between positive x axis and test point</li>
+  <li>index - which point on the polygon are we using for the test</li>
+  <li>rad - PI2/sides</li>
+  <li>d - length of vector from origin to test point, modulated</li>
+  <li>result - do we show this point</li>
+</ul>
+<label>sides</label>
+<input type="number" value="3" id="sides"/>
+<p>
+  Notice that if you are inside the polygon the result is positive.</p>
+  
+  
+
+    <script  src="js/index.js"></script>
+
+
+
+
+</body>
+
+</html>
