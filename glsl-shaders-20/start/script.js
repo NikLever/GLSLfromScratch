@@ -39,15 +39,7 @@ float sweep(vec2 pt, vec2 center, float radius, float line_width, float edge_thi
   //float h = dot(d,p)/dot(p,p);
   float l = length(d - p*h);
 
-  float gradient = 0.0;
-  const float gradient_angle = 1.0;
-
-  if (length(d)<radius){
-    float angle = mod( theta - atan(d.y, d.x), PI2);
-    gradient = clamp(gradient_angle - angle, 0.0, gradient_angle) * 0.5;
-  }
-
-  return gradient + 1.0 - smoothstep(line_width, line_width+edge_thickness, l);
+  return 1.0 - smoothstep(line_width, line_width+edge_thickness, l);
 }
 
 void main (void)

@@ -41,9 +41,8 @@ mat2 getScaleMatrix(float scale){
 
 void main (void)
 {
-  float tilecount = 6.0;
-  vec2 center = vec2(0.5);
-  vec2 pt = fract(vUv*tilecount) - center;
+  vec2 center = vec2(0.0);
+  vec2 pt = vPosition.xy - center;
   mat2 matr = getRotationMatrix(u_time);
   mat2 mats = getScaleMatrix((sin(u_time)+1.0)/3.0 + 0.5);
   pt = mats * matr * pt;

@@ -1,10 +1,10 @@
 const vshader = `
-varying vec2 vUv;
 varying vec3 vPosition;
+varying vec2 vUv;
 
 void main() {	
-  vUv = uv;
   vPosition = position;
+  vUv = uv;
   gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );
 }
 `
@@ -14,18 +14,31 @@ const fshader = `
 uniform vec2 u_mouse;
 uniform vec2 u_resolution;
 uniform float u_time;
+uniform vec3 u_color;
 
 varying vec2 vUv;
 varying vec3 vPosition;
 
-float line(float x, float y, float line_width, float edge_width){
-  return smoothstep(x-line_width/2.0-edge_width, x-line_width/2.0, y) - smoothstep(x+line_width/2.0, x+line_width/2.0+edge_width, y);
+float circle(vec2 pt, vec2 center, float radius, float edge_thickness){
+  vec2 p = pt - center;
+  float len = length(p);
+  float result = 1.0-smoothstep(radius-edge_thickness, radius, len);
+
+  return result;
+}
+
+float circle(vec2 pt, vec2 center, float radius, float line_width, float edge_thickness){
+  vec2 p = pt - center;
+  float len = length(p);
+  float half_line_width = line_width/2.0;
+  float result = smoothstep(radius-half_line_width-edge_thickness, radius-half_line_width, len) - smoothstep(radius + half_line_width, radius + half_line_width + edge_thickness, len);
+
+  return result;
 }
 
 void main (void)
 {
-  vec2 uv = gl_FragCoord.xy;
-  vec3 color = mix(vec3(0.0), vec3(1.0), line(uv.x, uv.y, 10.0, 1.0));
+  vec3 color = u_color * circle(vPosition.xy, vec2(0.0), 0.3, 0.01, 0.002);
   gl_FragColor = vec4(color, 1.0); 
 }
 `
@@ -46,8 +59,7 @@ const clock = new THREE.Clock();
 
 const geometry = new THREE.PlaneGeometry( 2, 2 );
 const uniforms = {
-  u_color_a: { value: new THREE.Color(0xff0000) },
-  u_color_b: { value: new THREE.Color(0x00ffff) },
+  u_color: { value: new THREE.Color(0xffff00) },
   u_time: { value: 0.0 },
   u_mouse: { value:{ x:0.0, y:0.0 }},
   u_resolution: { value:{ x:0, y:0 }}

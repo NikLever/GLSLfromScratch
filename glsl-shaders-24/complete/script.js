@@ -15,21 +15,24 @@ uniform float u_time;
 
 varying vec2 vUv;
 
+float line(float x, float y, float line_width, float edge_thickness){
+	float half_line_width = line_width * 0.5;
+  return smoothstep(x-half_line_width-edge_thickness, x-half_line_width, y) - smoothstep(x+half_line_width, x+half_line_width+edge_thickness, y);
+}
+
 float brick(vec2 pt, float mortar_height, float edge_thickness){
+  float result = line(pt.y, 0.0, mortar_height, edge_thickness);
+  result += line(pt.y, 0.5, mortar_height, edge_thickness);
+  result += line(pt.y, 1.0, mortar_height, edge_thickness);
   if (pt.y>0.5) pt.x = fract(pt.x + 0.5);
-  float half_mortar_height = mortar_height/2.0;
-  //Draw vertical lines
-  float result = smoothstep(-half_mortar_height - edge_thickness, -half_mortar_height, pt.x) - smoothstep(half_mortar_height, half_mortar_height + edge_thickness, pt.x) + smoothstep(1.0-half_mortar_height-edge_thickness, 1.0-half_mortar_height, pt.x);
-  //Draw top and bottom lines
-  result += smoothstep(-half_mortar_height - edge_thickness, -half_mortar_height, pt.y) - smoothstep(half_mortar_height, half_mortar_height + edge_thickness, pt.y);
-  //Draw middle line
-  result += smoothstep(0.5 - half_mortar_height - edge_thickness, 0.5 - half_mortar_height, pt.y) - smoothstep(0.5 + half_mortar_height, 0.5 + half_mortar_height + edge_thickness, pt.y);
+  result += line(pt.x, 0.5, mortar_height, edge_thickness);
+
   return result;
 }
 
 void main (void)
 {
-  vec2 uv = vUv;//fract(vUv * 10.0);
+  vec2 uv = vUv;
   vec3 color = brick(uv, 0.05, 0.001) * vec3(1.0);
   gl_FragColor = vec4(color, 1.0); 
 }

@@ -73,8 +73,6 @@ void main (void)
   color += circle(vUv, vec2(0.5), 0.2, 0.002, 0.001) * axis_color;
   color += circle(vUv, vec2(0.5), 0.1, 0.002, 0.001) * axis_color;
   color += sweep(vUv, vec2(0.5), 0.3, 0.003, 0.001) * vec3(0.1, 0.3, 1.0);
-  color += polygon(vUv, vec2(0.9 - sin(u_time*3.0)*0.05, 0.5), 0.005, 3, 0.0, 0.001) * vec3(1.0);
-  color += polygon(vUv, vec2(0.1 - sin(u_time*3.0+PI)*0.05, 0.5), 0.005, 3, PI, 0.001) * vec3(1.0); 
   //Try adding animated triangles to the y axis
   gl_FragColor = vec4(color, 1.0); 
 }

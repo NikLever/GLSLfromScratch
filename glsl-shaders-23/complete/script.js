@@ -43,8 +43,8 @@ void main (void)
 {
   vec2 pt = gl_FragCoord.xy;
   vec2 center = u_resolution/2.0;
-  float radius = 80.0;
-  vec3 color = polygon(pt, center, radius, 3, 0.0, 1.0) * vec3(1.0);
+  float radius = 160.0;
+  vec3 color = polygon(pt, center, radius*0.5, 3, 0.0, 1.0) * vec3(1.0);
   color += circle(pt, center, radius, 1.0, 1.0)*vec3(0.5);
   gl_FragColor = vec4(color, 1.0); 
 }

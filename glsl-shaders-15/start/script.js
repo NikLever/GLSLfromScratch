@@ -27,18 +27,9 @@ float circle(vec2 pt, vec2 center, float radius, float edge_thickness){
   return result;
 }
 
-float circle(vec2 pt, vec2 center, float radius, float line_width, float edge_thickness){
-  vec2 p = pt - center;
-  float len = length(p);
-  float half_line_width = line_width/2.0;
-  float result = smoothstep(radius-half_line_width-edge_thickness, radius-half_line_width, len) - smoothstep(radius + half_line_width, radius + half_line_width + edge_thickness, len);
-
-  return result;
-}
-
 void main (void)
 {
-  vec3 color = u_color * circle(vPosition.xy, vec2(0.0), 0.3, 0.01, 0.002);
+  vec3 color = u_color * circle(vPosition.xy, vec2(0.0), 0.3, 0.002);
   gl_FragColor = vec4(color, 1.0); 
 }
 `
