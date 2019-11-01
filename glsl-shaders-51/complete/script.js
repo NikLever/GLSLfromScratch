@@ -89,7 +89,6 @@ uniforms.u_rim_color = { value: new THREE.Color(0xffffff) };
 uniforms.u_rim_strength = { value: 1.6 };
 uniforms.u_rim_width = { value: 0.6 };
 uniforms.u_envmap_cube = { value: envCube };
-uniforms.u_envmap_color = { value: new THREE.Color(0x5b5340) };
 uniforms.u_envmap_strength = { value: 0.7 };
 
 const geometry = new THREE.TorusKnotGeometry( 1, 0.5, 100, 16 );			

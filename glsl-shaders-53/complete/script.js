@@ -1,5 +1,3 @@
-//based on https://gamedevelopment.tutsplus.com/tutorials/a-beginners-guide-to-coding-graphics-shaders-part-3--cms-24351
-
 const vshader = `
 varying vec3 vNormal;
 varying vec2 vUv;
@@ -25,11 +23,11 @@ uniform sampler2D u_diffuse_map;
 uniform sampler2D u_normal_map;
 
 void main(){
-	vec3 lightVector = normalize((vModelMatrix * vec4(u_light, 1.0)).xyz);
+	vec3 lightVector = normalize(u_light);
 	vec4 normal = texture2D(u_normal_map, vUv);
 	vec3 normalVector = normalize((vModelMatrix * (normal + vec4(vNormal, 1.0))).xyz);
-	float lightIntensity = dot(lightVector, normalVector)+ 0.2;
-	vec3 color = lightIntensity * texture2D(u_diffuse_map, vUv).rgb;//vec3(0.8, 0.4, 0.1);
+	float lightIntensity = clamp(0.0, 1.0, dot(lightVector, normalVector)) + 0.2;
+	vec3 color = lightIntensity * texture2D(u_diffuse_map, vUv).rgb;
 	gl_FragColor = vec4(color, 1.0);
 }
 `
@@ -51,8 +49,8 @@ document.body.appendChild( renderer.domElement );
 const uniforms = {};
 uniforms.u_light = { value: new THREE.Vector3(0.5,0.8,0.1) };
 uniforms.u_resolution = { value: new THREE.Vector2(1.0, 1.0) };
-uniforms.u_diffuse_map = { value: new THREE.TextureLoader().load('../images/bricks-diffuse3.png') };
-uniforms.u_normal_map = { value: new THREE.TextureLoader().load('../images/bricks-normal3.png') };
+uniforms.u_diffuse_map = { value: new THREE.TextureLoader().load('https://s3-us-west-2.amazonaws.com/s.cdpn.io/2666677/bricks-diffuse3.png') };
+uniforms.u_normal_map = { value: new THREE.TextureLoader().load('https://s3-us-west-2.amazonaws.com/s.cdpn.io/2666677/bricks-normal3.png') };
 
 const geometry = new THREE.BoxGeometry( 1, 1, 1 );			
 const material = new THREE.ShaderMaterial( {
