@@ -56,8 +56,6 @@ function onWindowResize( event ) {
   camera.bottom = -height;
   camera.updateProjectionMatrix();
   renderer.setSize( window.innerWidth, window.innerHeight );
-  uniforms.u_resolution.value.x = window.innerWidth;
-  uniforms.u_resolution.value.y = window.innerHeight;
 }
 
 function animate() {
