@@ -29,6 +29,13 @@ const material = new THREE.ShaderMaterial( {
   
 } );
 
+const uniforms = {
+  u_color: { value: new THREE.Color(0xff0000) },
+  u_time: { value: 0.0 },
+  u_mouse: { value:{ x:0.0, y:0.0 }},
+  u_resolution: { value:{ x:0, y:0 }}
+}
+
 const plane = new THREE.Mesh( geometry, material );
 scene.add( plane );
 
