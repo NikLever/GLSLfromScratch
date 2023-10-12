@@ -1,0 +1,27 @@
+body { 
+  margin: 0; 
+  font-family: Josefin Sans;
+  color: #ffffff;
+  font-size: 30px;
+}
+canvas { width: 100%; height: 100% }
+#next{
+  position: absolute;
+  right: 20px;
+  bottom: 20px;
+  fill: #fff;
+}
+#prev{
+  position: absolute;
+  left: 20px;
+  bottom: 20px;
+  fill: #fff;
+}
+#msg{
+  position: absolute;
+  top: 10px;
+  font-size: 20px;
+  width: 100%;
+  margin: auto;
+  text-align: center;
+}

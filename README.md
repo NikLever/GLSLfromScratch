@@ -2,7 +2,7 @@
 Resources for my Udemy course
 
 ## CodePen
-An online versions are available [here](https://codepen.io/collection/ngRMbq/)
+Online versions are available [here](https://codepen.io/collection/ngRMbq/)
 
 ## Links
 - [My courses](http://niklever.com/courses)
