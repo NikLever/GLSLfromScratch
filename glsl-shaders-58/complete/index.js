@@ -77,8 +77,7 @@ function setupProgram() {
     varying vec2 vUv;
 
     void main () {
-        vec3 col = vec3( vUv, 0 );
-        gl_FragColor = vec4(col, 1);
+        gl_FragColor = vec4(vUv, 0, 1);
     }
     `;
 
@@ -163,7 +162,6 @@ function drawElement(element) {
         element.indexBuffer
     );
 }
-
 
 function onWindowResize() {
     if (canvas){
