@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" type="image/svg+xml" href="../../images/icon.svg" />
+  <title>Learn GLSL from Scratch: WebGL2 </title>
+  
+  <style>
+    body{
+      padding: 0;
+      margin: 0;
+    }
+  </style>
+</head>
+<body>
+<script type="importmap">
+{
+  "imports": {
+    "three": "../../libs/three/build/three.module.js",
+    "three/addons/": "../../libs/three/examples/jsm/"
+  }
+}
+</script>
+<script  type="module"> 
+  import * as THREE from "three"
+  import { OrbitControls } from "three/addons/controls/OrbitControls.js"
+  import { GUI } from "three/addons/libs/lil-gui.module.min.js"
+
+  const vshader = `
+//#include <common>
+//#include <lights_pars_begin>
+
+uniform float u_time;
+uniform float u_radius;
+
+varying vec3 vPosition;
+varying vec3 vLightIntensity;
+
+float getDelta(){
+  return ((sin(u_time)+1.0)/2.0);
+}
+
+void main() {
+  float delta = getDelta();
+  vec3 vLightFront;
+  vec3 objectNormal = delta * normal + (1.0 - delta) * normalize(position);
+
+  //#include <defaultnormal_vertex>
+  //#include <begin_vertex>
+  //#include <project_vertex>
+  //#include <lights_lambert_vertex>
+
+  vLightIntensity = vec3(1.0);//vLightFront + ambientLightColor;
+  vPosition = position;
+
+  vec3 v = normalize(position) * u_radius;
+  vec3 pos = mix(v, position, delta);
+
+  gl_Position = projectionMatrix * modelViewMatrix * vec4( pos, 1.0 );
+}
+`
+const fshader = `
+varying vec3 vLightIntensity;
+
+void main()
+{
+  vec3 color = vec3(0.5);
+  gl_FragColor = vec4(vLightIntensity * color, 1.0);
+}
+`
+
+  let scene, camera, renderer, controls, uniforms, clock;
+
+  init();
+
+  function init(){
+    scene = new THREE.Scene();
+    
+    camera = new THREE.PerspectiveCamera( 60, window.innerWidth / window.innerHeight, 0.1, 100 );
+    camera.position.set(0, 0, 2);
+    
+    const ambient = new THREE.HemisphereLight(0xffffff, 0xbbbbff, 0.3);
+    scene.add(ambient);
+    
+    const light = new THREE.DirectionalLight(0xFFFFFF, 1);
+    light.position.set( 0.2, 1, 1);
+    scene.add(light);
+    
+    renderer = new THREE.WebGLRenderer({antialias: true});
+    renderer.setSize( window.innerWidth, window.innerHeight );
+    document.body.appendChild( renderer.domElement );
+
+    clock = new THREE.Clock();
+
+    const geometry = new THREE.BoxGeometry( 1, 1, 1, 10, 10, 10 );
+    uniforms = {};
+    uniforms.u_time = { value: 0.0 };
+    uniforms.u_radius = { value: 0.5 };
+
+    const material = new THREE.ShaderMaterial( {
+      uniforms: uniforms,
+      vertexShader: vshader,
+      fragmentShader: fshader,
+      wireframe: true
+    } );
+
+    const ball = new THREE.Mesh( geometry, material );
+    scene.add( ball );
+    
+    controls = new OrbitControls(camera, renderer.domElement);
+      
+    window.addEventListener( 'resize', resize, false);
+    
+    update();
+  }
+
+  function update(){
+    requestAnimationFrame( update );
+    uniforms.u_time.value += clock.getDelta();
+    renderer.render( scene, camera );  
+  }
+
+  function resize(){
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize( window.innerWidth, window.innerHeight );
+  }
+</script>
+</body>
+</html>
