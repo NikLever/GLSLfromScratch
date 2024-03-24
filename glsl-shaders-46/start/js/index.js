@@ -12,6 +12,7 @@ const fshader = `
 uniform vec2 u_mouse;
 uniform vec2 u_resolution;
 uniform float u_time;
+uniform vec3 u_color;
 
 varying vec2 vUv;
 
@@ -19,8 +20,7 @@ varying vec2 vUv;
 
 void main (void)
 {
-  vec3 color = vec3(0.5);
-  gl_FragColor = vec4(color, 1.0);
+  gl_FragColor = vec4(u_color, 1.0);
 }
 `
 
@@ -48,55 +48,29 @@ const geometry = new THREE.IcosahedronGeometry( 20, 4 );
 const uniforms = {
   u_time: { value: 0.0 },
   u_mouse: { value:{ x:0.0, y:0.0 }},
-  u_resolution: { value:{ x:0, y:0 }}
+  u_resolution: { value:{ x:0, y:0 }},
+  u_color: { value: new THREE.Color(0xb7ff00)}
 }
 
 const material = new THREE.ShaderMaterial( {
   uniforms: uniforms,
   vertexShader: vshader,
-  fragmentShader: fshader
+  fragmentShader: fshader,
+  wireframe: true
 } );
 
-const material1 = new THREE.MeshBasicMaterial({
-  color: 0xb7ff00,
-  wireframe: true
-});
-
-const ball = new THREE.Mesh( geometry, material1 );
+const ball = new THREE.Mesh( geometry, material );
 scene.add( ball );
 
 const controls = new THREE.OrbitControls(camera, renderer.domElement);
 
 onWindowResize();
-if ('ontouchstart' in window){
-  document.addEventListener('touchmove', move);
-}else{
-  window.addEventListener( 'resize', onWindowResize, false );
-  document.addEventListener('mousemove', move);
-}
+window.addEventListener( 'resize', onWindowResize, false );
 
-function move(evt){
-  uniforms.u_mouse.value.x = (evt.touches) ? evt.touches[0].clientX : evt.clientX;
-  uniforms.u_mouse.value.y = (evt.touches) ? evt.touches[0].clientY : evt.clientY;
-}
-
-animate();
+animate(); 
 
 function onWindowResize( event ) {
-  const aspectRatio = window.innerWidth/window.innerHeight;
-  let width, height;
-  if (aspectRatio>=1){
-    width = 1;
-    height = (window.innerHeight/window.innerWidth) * width;
-    
-  }else{
-    width = aspectRatio;
-    height = 1;
-  }
-  camera.left = -width;
-  camera.right = width;
-  camera.top = height;
-  camera.bottom = -height;
+  camera.aspect = window.innerWidth/window.innerHeight;
   camera.updateProjectionMatrix();
   renderer.setSize( window.innerWidth, window.innerHeight );
   uniforms.u_resolution.value.x = window.innerWidth;

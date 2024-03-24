@@ -1,7 +1,7 @@
 const vshader = `
-varying vec2 vUv;
+varying vec2 v_uv;
 void main() {	
-  vUv = uv;
+  v_uv = uv;
   gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );
 }
 `
@@ -9,8 +9,10 @@ const fshader = `
 uniform vec2 u_resolution;
 uniform vec2 u_mouse;
 uniform float u_time;
+uniform vec3 u_color_a;
+uniform vec3 u_color_b;
 
-varying vec2 vUv;
+varying vec2 v_uv;
 
 // 2D Random
 float random (vec2 st) {
@@ -43,14 +45,14 @@ float noise (vec2 st) {
 }
 
 void main() {
-    vec2 st = vUv;
+    vec2 st = v_uv;
 
     // Scale the coordinate system to see
     // some noise in action
     vec2 pos = vec2(st*8.0);
 
     // Use the noise function
-    float n = noise(pos);
+    float n = noise(pos); 
     //n = smoothstep(0.4, 0.6, n);
 
     gl_FragColor = vec4(vec3(n), 1.0);
@@ -74,7 +76,7 @@ const clock = new THREE.Clock();
 const geometry = new THREE.PlaneGeometry( 2, 2 );
 const uniforms = {
   u_color_a: { value: new THREE.Color(0xff0000) },
-  u_color_b: { value: new THREE.Color(0x00ffff) },
+  u_color_b: { value: new THREE.Color(0xffff00) },
   u_time: { value: 0.0 },
   u_mouse: { value:{ x:0.0, y:0.0 }},
   u_resolution: { value:{ x:0, y:0 }}

@@ -5,15 +5,9 @@ void main() {
 `
 const fshader = `
 uniform vec3 u_color;
-uniform vec2 u_mouse;
-uniform vec2 u_resolution;
-uniform float u_time;
 
-void main (void)
-{
-  vec3 color = vec3(u_mouse.x/u_resolution.x, 0.0, u_mouse.y/u_resolution.y);
-  //color = vec3((sin(u_time)+1.0)/2.0, 0.0, (cos(u_time)+1.0)/2.0);
-  gl_FragColor = vec4(color, 1.0); 
+void main(){
+  gl_FragColor = vec4(u_color, 1.0);
 }
 `
 
@@ -29,14 +23,13 @@ const renderer = new THREE.WebGLRenderer();
 renderer.setSize( window.innerWidth, window.innerHeight );
 document.body.appendChild( renderer.domElement );
 
-const clock = new THREE.Clock();
-
 const geometry = new THREE.PlaneGeometry( 2, 2 );
+
 const uniforms = {
-  u_color: { value: new THREE.Color(0xff0000) },
   u_time: { value: 0.0 },
-  u_mouse: { value:{ x:0.0, y:0.0 }},
-  u_resolution: { value:{ x:0, y:0 }}
+  u_mouse: { value: { x: 0.0, y: 0.0 }},
+  u_resolution: { value: { x: 0.0, y: 0.0}},
+  u_color: { value: new THREE.Color(0xFF0000)}
 }
 
 const material = new THREE.ShaderMaterial( {
@@ -51,6 +44,7 @@ scene.add( plane );
 camera.position.z = 1;
 
 onWindowResize();
+
 if ('ontouchstart' in window){
   document.addEventListener('touchmove', move);
 }else{
@@ -58,12 +52,17 @@ if ('ontouchstart' in window){
   document.addEventListener('mousemove', move);
 }
 
+animate();
+
 function move(evt){
   uniforms.u_mouse.value.x = (evt.touches) ? evt.touches[0].clientX : evt.clientX;
-  uniforms.u_mouse.value.y = (evt.touches) ? evt.touches[0].clientY : evt.clientY;
+   uniforms.u_mouse.value.y = (evt.touches) ? evt.touches[0].clientY : evt.clientY;
 }
 
-animate();
+function animate() {
+  requestAnimationFrame( animate );
+  renderer.render( scene, camera );
+}
 
 function onWindowResize( event ) {
   const aspectRatio = window.innerWidth/window.innerHeight;
@@ -81,12 +80,9 @@ function onWindowResize( event ) {
   camera.bottom = -height;
   camera.updateProjectionMatrix();
   renderer.setSize( window.innerWidth, window.innerHeight );
-  uniforms.u_resolution.value.x = window.innerWidth;
-  uniforms.u_resolution.value.y = window.innerHeight;
+  if (uniforms.u_resolution !== undefined){
+    uniforms.u_resolution.value.x = window.innerWidth;
+    uniforms.u_resolution.value.y = window.innerHeight;
+  }
 }
 
-function animate() {
-  requestAnimationFrame( animate );
-  uniforms.u_time.value += clock.getDelta();
-  renderer.render( scene, camera );
-}

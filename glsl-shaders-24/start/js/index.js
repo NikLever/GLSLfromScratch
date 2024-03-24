@@ -1,36 +1,29 @@
 const vshader = `
-varying vec2 vUv;
+varying vec2 v_uv;
 void main() {	
-  vUv = uv;
+  v_uv = uv;
   gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );
 }
 `
 const fshader = `
-#define PI 3.141592653589
-#define PI2 6.28318530718
+uniform vec3 u_color_a;
+uniform vec3 u_color_b;
 
-uniform vec2 u_mouse;
-uniform vec2 u_resolution;
-uniform float u_time;
+varying vec2 v_uv;
 
-varying vec2 vUv;
+float line(float x, float y, float line_width, float edge_width){
+  return smoothstep(x-line_width/2.0-edge_width, x-line_width/2.0, y) - smoothstep(x+line_width/2.0, x+line_width/2.0+edge_width, y);
+}
 
 float brick(vec2 pt, float mortar_height, float edge_thickness){
-  if (pt.y>0.5) pt.x = fract(pt.x + 0.5);
-  float half_mortar_height = mortar_height/2.0;
-  //Draw vertical lines
-  float result = smoothstep(-half_mortar_height - edge_thickness, -half_mortar_height, pt.x) - smoothstep(half_mortar_height, half_mortar_height + edge_thickness, pt.x) + smoothstep(1.0-half_mortar_height-edge_thickness, 1.0-half_mortar_height, pt.x);
-  //Draw top and bottom lines
-  result += smoothstep(-half_mortar_height - edge_thickness, -half_mortar_height, pt.y) - smoothstep(half_mortar_height, half_mortar_height + edge_thickness, pt.y);
-  //Draw middle line
-  result += smoothstep(0.5 - half_mortar_height - edge_thickness, 0.5 - half_mortar_height, pt.y) - smoothstep(0.5 + half_mortar_height, 0.5 + half_mortar_height + edge_thickness, pt.y);
+  float result = 0.0;
+
   return result;
 }
 
 void main (void)
 {
-  vec2 uv = vUv;//fract(vUv * 10.0);
-  vec3 color = brick(uv, 0.05, 0.001) * vec3(1.0);
+  vec3 color = brick(v_uv, 0.05, 0.001) * vec3(1.0);
   gl_FragColor = vec4(color, 1.0); 
 }
 `

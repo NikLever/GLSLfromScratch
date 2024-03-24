@@ -15,13 +15,13 @@ uniform vec3 u_color;
 
 varying vec3 vPosition;
 
-float rect(vec2 pt, vec2 anchor, vec2 size, vec2 center){
+float rect(vec2 pt, vec2 size, vec2 center){
   //return 0 if not in rect and 1 if it is
   //step(edge, x) 0.0 is returned if x < edge, and 1.0 is returned otherwise.
   vec2 p = pt - center;
   vec2 halfsize = size/2.0;
-  float horz = step(-halfsize.x - anchor.x, p.x) - step(halfsize.x - anchor.x, p.x);
-  float vert = step(-halfsize.y - anchor.y, p.y) - step(halfsize.y - anchor.y, p.y);
+  float horz = step(-halfsize.x, p.x) - step(halfsize.x, p.x);
+  float vert = step(-halfsize.y, p.y) - step(halfsize.y, p.y);
   return horz*vert;
 }
 
@@ -33,12 +33,12 @@ mat2 getRotationMatrix(float theta){
 
 void main (void)
 {
-  vec2 center = vec2(0.0);
+  vec2 center = vec2(0.5, -0.3);
   vec2 pt = vPosition.xy - center;
   mat2 mat = getRotationMatrix(u_time);
   pt = mat * pt;
   pt += center;
-  vec3 color = u_color * rect(pt, vec2(0.15), vec2(0.3), center);
+  vec3 color = u_color * rect(pt, vec2(0.3), center);
   gl_FragColor = vec4(color, 1.0); 
 }
 `

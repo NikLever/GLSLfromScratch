@@ -1,32 +1,23 @@
 const vshader = `
-varying vec2 vUv;
+varying vec2 v_uv;
+varying vec3 v_position;
+
 void main() {	
-  vUv = uv;
+  v_uv = uv;
+  v_position = position;
   gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );
 }
 `
 const fshader = `
 #define PI 3.141592653589
-#define PI2 6.28318530718
 
-uniform vec2 u_mouse;
-uniform vec2 u_resolution;
-uniform float u_time;
-uniform sampler2D u_tex;
-
-varying vec2 vUv;
-
-vec2 rotate(vec2 pt, float theta){
-  float c = cos(theta);
-  float s = sin(theta);
-  mat2 mat = mat2(c,s,-s,c);
-  return mat * pt;
-}
+varying vec2 v_uv;
+varying vec3 v_position;
 
 void main (void)
 {
-  vec2 uv = vUv;
-  vec3 color = texture2D(u_tex, uv).rgb;
+  vec3 color = vec3(length(v_uv));
+
   gl_FragColor = vec4(color, 1.0); 
 }
 `
@@ -38,6 +29,7 @@ void main (void)
 
 const scene = new THREE.Scene();
 const camera = new THREE.OrthographicCamera( -1, 1, 1, -1, 0.1, 10 );
+const assetPath = "https://s3-us-west-2.amazonaws.com/s.cdpn.io/2666677/";
 
 const renderer = new THREE.WebGLRenderer();
 renderer.setSize( window.innerWidth, window.innerHeight );
@@ -47,7 +39,6 @@ const clock = new THREE.Clock();
 
 const geometry = new THREE.PlaneGeometry( 2, 1.5 );
 const uniforms = {
-  u_tex: { value: new THREE.TextureLoader().load("https://s3-us-west-2.amazonaws.com/s.cdpn.io/2666677/sa1.jpg") },
   u_time: { value: 0.0 },
   u_mouse: { value:{ x:0.0, y:0.0 }},
   u_resolution: { value:{ x:0, y:0 }}

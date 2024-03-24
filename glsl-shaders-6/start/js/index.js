@@ -1,7 +1,7 @@
 const vshader = `
 varying vec3 vPosition;
 
-void main() {
+void main() {	
   vPosition = position;
   gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );
 }
@@ -18,8 +18,9 @@ varying vec3 vPosition;
 void main (void)
 {
   vec3 color = vec3(0.0);
-  color.r = step(0.0, vPosition.x);
-  color.g = step(0.0, vPosition.y);
+  color.r = clamp(vPosition.x, 0.0, 1.0);
+  color.g = clamp(vPosition.y, 0.0, 1.0);
+  color.b = clamp(vPosition.z, 0.0, 1.0);
   
   gl_FragColor = vec4(color, 1.0);
 }

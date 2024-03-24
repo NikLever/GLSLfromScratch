@@ -45,18 +45,21 @@ function init() {
   light = new THREE.DirectionalLight( 0xffffff );
   light.position.set( 1, 1, 1 );
   scene.add( light );
+  
+  // postprocessing - add here
+  
+  //
+  window.addEventListener( 'resize', onWindowResize, false );
+  onWindowResize();
+  
+}
 
+function setupPass( index ){
   const gui = new dat.GUI();
   
   let folder;
   
-  // postprocessing
-  composer = new THREE.EffectComposer( renderer );
-  composer.addPass( new THREE.RenderPass( scene, camera ) );
-  
-  const passType = 2;//0-Glitch, 1-Film, 2-Dot
-  
-  switch(passType){
+  switch(index){
   case 0:
 	glslPass = new THREE.GlitchPass();
 	glslPass.renderToScreen = true;
@@ -70,7 +73,7 @@ function init() {
   	glslPass.renderToScreen = true;
 	composer.addPass( glslPass );
 	folder = gui.addFolder('FilmPass');
-	folder.add(glslPass.uniforms.grayscale, 'value').name('grayscale');
+	folder.add(glslPass.uniforms.grayscale, 'value', 0, 1, 1).name('grayscale');
 	folder.add(glslPass.uniforms.nIntensity, 'value', 0, 1).name('noise intensity');
 	folder.add(glslPass.uniforms.sIntensity, 'value', 0, 1).name('scanline intensity');
 	folder.add(glslPass.uniforms.sCount, 'value', 0, 1000).name('scanline count');
@@ -85,13 +88,6 @@ function init() {
 	folder.open();
 	break;
   }
-
-  //
-
-  window.addEventListener( 'resize', onWindowResize, false );
-  onWindowResize();
-  //updateOptions();
-
 }
 
 function onWindowResize() {
@@ -100,9 +96,7 @@ function onWindowResize() {
   camera.updateProjectionMatrix();
 
   renderer.setSize( window.innerWidth, window.innerHeight );
-  composer.setSize( window.innerWidth, window.innerHeight );
-
-
+  if (composer) composer.setSize( window.innerWidth, window.innerHeight );
 }
 
 function animate() {
@@ -112,7 +106,10 @@ function animate() {
   object.rotation.x += 0.005;
   object.rotation.y += 0.01;
 
-  composer.render();
-  //renderer.render(scene, camera);
-
+  if (composer){
+    composer.render();
+  }else{
+    renderer.render(scene, camera);
+  }
+  
 }

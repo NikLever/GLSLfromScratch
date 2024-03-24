@@ -4,16 +4,15 @@ void main() {
 }
 `
 const fshader = `
-uniform vec3 u_color_a;
-uniform vec3 u_color_b;
+uniform vec3 u_color;
 uniform vec2 u_mouse;
 uniform vec2 u_resolution;
 uniform float u_time;
 
 void main (void)
 {
-  float delta = (sin(u_time)+1.0)/2.0;
-  vec3 color = mix(u_color_a, u_color_b, delta);
+  vec3 color = vec3(u_mouse.x/u_resolution.x, 0.0, u_mouse.y/u_resolution.y);
+  //color = vec3((sin(u_time)+1.0)/2.0, 0.0, (cos(u_time)+1.0)/2.0);
   gl_FragColor = vec4(color, 1.0); 
 }
 `
@@ -34,8 +33,7 @@ const clock = new THREE.Clock();
 
 const geometry = new THREE.PlaneGeometry( 2, 2 );
 const uniforms = {
-  u_color_a: { value: new THREE.Color(0xff0000) },
-  u_color_b: { value: new THREE.Color(0x0000ff) },
+  u_color: { value: new THREE.Color(0xff0000) },
   u_time: { value: 0.0 },
   u_mouse: { value:{ x:0.0, y:0.0 }},
   u_resolution: { value:{ x:0, y:0 }}

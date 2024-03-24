@@ -1,7 +1,10 @@
 const vshader = `
-varying vec3 vPosition;
+varying vec3 v_position;
+varying vec2 v_uv;
+
 void main() {	
-  vPosition = position;
+  v_position = position;
+  v_uv = uv;
   gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );
 }
 `
@@ -12,7 +15,8 @@ uniform vec2 u_mouse;
 uniform vec2 u_resolution;
 uniform float u_time;
 
-varying vec3 vPosition;
+varying vec3 v_position; 
+varying vec2 v_uv;
 
 float rect(vec2 pt, vec2 size, vec2 center){
   //return 0 if not in box and 1 if it is
@@ -24,12 +28,40 @@ float rect(vec2 pt, vec2 size, vec2 center){
   return horz * vert;
 }
 
+float circle(vec2 pt, vec2 center, float radius){
+  vec2 p = pt - center;
+  return 1.0 - step(radius, length(p));
+}
+
+float circle(vec2 pt, vec2 center, float radius, bool soften){
+  vec2 p = pt - center;
+  float edge = (soften) ? radius * 0.5 : 0.0;
+  return 1.0 - smoothstep(radius-edge, radius+edge, length(p));
+}
+
+float circle(vec2 pt, vec2 center, float radius, float line_width){
+  vec2 p = pt - center;
+  float len = length(p);
+  float half_line_width = line_width / 2.0;
+  return step(radius-half_line_width, len) - step(radius+half_line_width, len);
+}
+
+float circle(vec2 pt, vec2 center, float radius, float line_width, bool soften){
+  vec2 p = pt - center;
+  float len = length(p);
+  float half_line_width = line_width / 2.0;
+  float edge = (soften) ? radius * 0.05 : 0.0;
+  return smoothstep(radius-half_line_width-edge, radius-half_line_width, len) - smoothstep(radius+half_line_width, radius+half_line_width+edge, len);
+}
+
+float line(float a, float b, float line_width, float edge_thickness){
+  float half_line_width = line_width * 0.5;
+  return smoothstep(a-half_line_width-edge_thickness, a-half_line_width, b) - smoothstep(a+half_line_width, a+half_line_width+edge_thickness, b);
+}
+
 void main (void)
 {
-  float radius = 0.5;
-  float angle = u_time;
-  float square = rect(vPosition.xy, vec2(0.5), vec2(cos(angle)*radius, sin(angle)*radius));
-  vec3 color = vec3(1.0, 1.0, 0.0) * square;
+  vec3 color = vec3(1.0, 1.0, 0.0) * rect(v_position.xy, vec2(1.0), vec2(0.0));
   gl_FragColor = vec4(color, 1.0); 
 }
 `

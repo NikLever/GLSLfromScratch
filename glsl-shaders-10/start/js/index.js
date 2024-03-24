@@ -11,34 +11,25 @@ const fshader = `
 uniform vec2 u_mouse;
 uniform vec2 u_resolution;
 uniform float u_time;
-uniform vec3 u_color;
 
 varying vec3 vPosition;
 
 float rect(vec2 pt, vec2 size, vec2 center){
-  //return 0 if not in rect and 1 if it is
+  //return 0 if not in box and 1 if it is
   //step(edge, x) 0.0 is returned if x < edge, and 1.0 is returned otherwise.
+  vec2 halfsize = size * 0.5;
   vec2 p = pt - center;
-  vec2 halfsize = size/2.0;
   float horz = step(-halfsize.x, p.x) - step(halfsize.x, p.x);
   float vert = step(-halfsize.y, p.y) - step(halfsize.y, p.y);
-  return horz*vert;
-}
-
-mat2 getRotationMatrix(float theta){
-  float s = sin(theta);
-  float c = cos(theta);
-  return mat2(c, -s, s, c);
+  return horz * vert;
 }
 
 void main (void)
 {
-  vec2 center = vec2(0.5, -0.3);
-  vec2 pt = vPosition.xy - center;
-  mat2 mat = getRotationMatrix(u_time);
-  pt = mat * pt;
-  pt += center;
-  vec3 color = u_color * rect(pt, vec2(0.3), center);
+  float radius = 0.5;
+  float angle = u_time;
+  float square = rect(vPosition.xy, vec2(0.5), vec2(cos(angle)*radius, sin(angle)*radius));
+  vec3 color = vec3(1.0, 1.0, 0.0) * square;
   gl_FragColor = vec4(color, 1.0); 
 }
 `
@@ -59,7 +50,8 @@ const clock = new THREE.Clock();
 
 const geometry = new THREE.PlaneGeometry( 2, 2 );
 const uniforms = {
-  u_color: { value: new THREE.Color(0xffff00) },
+  u_color_a: { value: new THREE.Color(0xff0000) },
+  u_color_b: { value: new THREE.Color(0x00ffff) },
   u_time: { value: 0.0 },
   u_mouse: { value:{ x:0.0, y:0.0 }},
   u_resolution: { value:{ x:0, y:0 }}

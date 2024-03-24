@@ -1,9 +1,6 @@
 const vshader = `
-varying vec2 vUv;
 varying vec3 vPosition;
-
 void main() {	
-  vUv = uv;
   vPosition = position;
   gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );
 }
@@ -16,7 +13,6 @@ uniform vec2 u_resolution;
 uniform float u_time;
 uniform vec3 u_color;
 
-varying vec2 vUv;
 varying vec3 vPosition;
 
 float rect(vec2 pt, vec2 anchor, vec2 size, vec2 center){
@@ -41,9 +37,8 @@ mat2 getScaleMatrix(float scale){
 
 void main (void)
 {
-  float tilecount = 6.0;
-  vec2 center = vec2(0.5);
-  vec2 pt = fract(vUv*tilecount) - center;
+  vec2 center = vec2(0.1, 0.3);
+  vec2 pt = vPosition.xy - center;
   mat2 matr = getRotationMatrix(u_time);
   mat2 mats = getScaleMatrix((sin(u_time)+1.0)/3.0 + 0.5);
   pt = mats * matr * pt;

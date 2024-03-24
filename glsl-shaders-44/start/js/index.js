@@ -2,20 +2,8 @@ const vshader = `
 uniform float u_time;
 uniform float u_radius;
 
-varying vec3 vPosition;
-
-float getDelta(){
-  return ((sin(u_time)+1.0)/2.0);
-}
-
 void main() {
-  float delta = getDelta();
-
-  vPosition = position;
-
-  vec3 v = normalize(position) * u_radius;
-  vec3 pos = mix(position, v, delta);
-  pos = position;
+  vec3 pos = position;
 
   gl_Position = projectionMatrix * modelViewMatrix * vec4( pos, 1.0 );
 }

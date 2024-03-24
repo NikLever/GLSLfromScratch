@@ -1,13 +1,15 @@
 const vshader = `
-varying vec3 vPosition;
+varying vec3 v_position;
 
 void main() {
-  vPosition = position;
+  v_position = position;
 
   gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );
 }
 `
 const fshader = `
+#include <noise>
+
 uniform vec3 u_LightColor;
 uniform vec3 u_DarkColor;
 uniform float u_Frequency;
@@ -15,17 +17,12 @@ uniform float u_NoiseScale;
 uniform float u_RingScale;
 uniform float u_Contrast;
 
-varying vec3 vPosition;
-
-#include <noise>
+varying vec3 v_position;
 
 void main(){
-  float n = snoise( vPosition );
-  float ring = fract( u_Frequency * vPosition.z + u_NoiseScale * n );
-  ring *= u_Contrast * ( 1.0 - ring );
-
-  // Adjust ring smoothness and shape, and add some noise
-  float lerp = pow( ring, u_RingScale ) + n;
+  float n = snoise(v_position); 
+  float ring = u_Contrast - fract(u_NoiseScale * n);
+  float lerp = pow(ring, u_RingScale) + n;
   vec3 color = mix(u_DarkColor, u_LightColor, lerp);
 
   gl_FragColor = vec4(color, 1.0);
